@@ -1,0 +1,47 @@
+package com.example.demo.Controller;
+
+import com.example.demo.Entity.Bulletin;
+import com.example.demo.Repository.BulletinRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Date;
+
+@RestController
+@RequestMapping("/api/bulletins")
+public class BulletinController {
+
+    @Autowired
+    private BulletinRepository bulletinRepository;
+
+    @PostMapping("/upload")
+    public Bulletin uploadBulletin(
+
+            @RequestParam String reference,
+            @RequestParam String nomadherent,
+            @RequestParam String nommalade,
+            @RequestParam Bulletin.TypeMalade typemalade,
+            @RequestParam String adresse,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date datenaissance,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date datedepot,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date datesoin,
+            @RequestParam Bulletin.EtatBulletin etat,
+            @RequestParam MultipartFile fichier
+    ) throws Exception {
+        Bulletin bulletin = new Bulletin();
+        bulletin.setReference(reference);
+        bulletin.setNomadherent(nomadherent);
+        bulletin.setNommalade(nommalade);
+        bulletin.setTypemalade(typemalade);
+        bulletin.setAdresse(adresse);
+        bulletin.setDatenaissance(datenaissance);
+        bulletin.setDatedepot(datedepot);
+        bulletin.setDatesoin(datesoin);
+        bulletin.setEtat(etat);
+        bulletin.setFichier(fichier.getBytes());
+
+        return bulletinRepository.save(bulletin);
+    }
+}
