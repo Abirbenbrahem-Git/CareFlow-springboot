@@ -10,13 +10,13 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.Date;
 
 @RestController
-@RequestMapping("/api/bulletins")
+@RequestMapping("/bulletins")
 public class BulletinController {
 
     @Autowired
     private BulletinRepository bulletinRepository;
 
-    @PostMapping("/upload")
+    @PostMapping("/post")
     public Bulletin uploadBulletin(
 
             @RequestParam String reference,
