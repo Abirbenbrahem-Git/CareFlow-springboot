@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping("/bulletins")
@@ -44,4 +45,11 @@ public class BulletinController {
 
         return bulletinRepository.save(bulletin);
     }
+
+
+    @GetMapping("/all")
+    public List<Bulletin> getAllBulletins() {
+        return bulletinRepository.findAll();
+    }
+
 }
