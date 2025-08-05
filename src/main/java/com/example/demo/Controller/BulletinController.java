@@ -53,4 +53,14 @@ public class BulletinController {
         return bulletinRepository.findAll();
     }
 
+    @DeleteMapping("/delete/{id}")
+    public String deleteBulletin(@PathVariable Integer id) {
+        if (bulletinRepository.existsById(id)) {
+            bulletinRepository.deleteById(id);
+            return "Bulletin avec ID " + id + " supprimé avec succès.";
+        } else {
+            return "Bulletin avec ID " + id + " introuvable.";
+        }
+    }
+
 }
