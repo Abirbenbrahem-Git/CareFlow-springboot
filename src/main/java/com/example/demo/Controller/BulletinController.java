@@ -63,4 +63,38 @@ public class BulletinController {
         }
     }
 
+    @PutMapping("/update/{id}")
+    public Bulletin updateBulletin(
+            @PathVariable Integer id,
+            @RequestParam String reference,
+            @RequestParam String nomadherent,
+            @RequestParam String nommalade,
+            @RequestParam Bulletin.TypeMalade typemalade,
+            @RequestParam String adresse,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date datenaissance,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date datedepot,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date datesoin,
+            @RequestParam Bulletin.EtatBulletin etat,
+            @RequestParam(required = false) MultipartFile fichier
+    ) throws Exception {
+
+        Bulletin bulletin = bulletinRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Bulletin avec ID " + id + " introuvable."));
+
+        bulletin.setReference(reference);
+        bulletin.setNomadherent(nomadherent);
+        bulletin.setNommalade(nommalade);
+        bulletin.setTypemalade(typemalade);
+        bulletin.setAdresse(adresse);
+        bulletin.setDatenaissance(datenaissance);
+        bulletin.setDatedepot(datedepot);
+        bulletin.setDatesoin(datesoin);
+        bulletin.setEtat(etat);
+        if (fichier != null && !fichier.isEmpty()) {
+            bulletin.setFichier(fichier.getBytes());
+        }
+        return bulletinRepository.save(bulletin);
+    }
+
+
 }
