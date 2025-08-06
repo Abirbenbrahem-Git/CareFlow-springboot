@@ -2,6 +2,8 @@ package com.example.demo.Controller;
 
 import com.example.demo.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.demo.Entity.User;
 @CrossOrigin(origins = "http://localhost:4200")
@@ -13,12 +15,14 @@ public class UserController {
     private UserRepository userRepository;
 
     @PostMapping("/register")
-    public String registerUser(@RequestBody User user) {
+    public ResponseEntity<?> registerUser(@RequestBody User user) {
         if (userRepository.existsByMail(user.getMail())) {
-            return "Cet email est déjà utilisé.";
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body("{\"message\": \"Cet email est déjà utilisé.\"}");
         }
         userRepository.save(user);
-        return "Utilisateur enregistré avec succès.";
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body("{\"message\": \"Utilisateur enregistré avec succès.\"}");
     }
 
 
