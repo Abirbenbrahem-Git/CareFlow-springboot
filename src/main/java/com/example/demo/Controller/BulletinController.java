@@ -96,5 +96,12 @@ public class BulletinController {
         return bulletinRepository.save(bulletin);
     }
 
+    @GetMapping("/find/{id}")
+    public Bulletin getBulletinById(@PathVariable Integer id) {
+        return bulletinRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Bulletin avec ID " + id + " introuvable."));
+    }
+
+
 
 }
