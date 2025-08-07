@@ -1,5 +1,6 @@
 package com.example.demo.Controller;
 
+import com.example.demo.Payload.LoginResponse;
 import com.example.demo.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,18 @@ public class UserController {
         userRepository.save(user);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body("{\"message\": \"Utilisateur enregistré avec succès.\"}");
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> loginUser(@RequestBody User loginRequest) {
+        User user = userRepository.findByMail(loginRequest.getMail());
+
+        if (user == null || !user.getMotdepasse().equals(loginRequest.getMotdepasse())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("{\"message\": \"Email ou mot de passe incorrect.\"}");
+        }
+
+        return ResponseEntity.ok().body(new LoginResponse("Connexion réussie", user.getRole().name(), user.getIduser()));
     }
 
 
