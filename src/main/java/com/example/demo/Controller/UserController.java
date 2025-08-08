@@ -7,6 +7,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.demo.Entity.User;
+
+import java.util.Map;
+import java.util.Optional;
+
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/user")
@@ -27,16 +31,20 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestBody User loginRequest) {
-        User user = userRepository.findByMail(loginRequest.getMail());
+    public ResponseEntity<?> login(@RequestBody Map<String, String> credentials) {
+        String mail = credentials.get("mail");
+        String motdepasse = credentials.get("motdepasse");
 
-        if (user == null || !user.getMotdepasse().equals(loginRequest.getMotdepasse())) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body("{\"message\": \"Email ou mot de passe incorrect.\"}");
+        Optional<User> userOpt = userRepository.findByMailAndMotdepasse(mail, motdepasse);
+
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            return ResponseEntity.ok(user);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
-
-        return ResponseEntity.ok().body(new LoginResponse("Connexion réussie", user.getRole().name(), user.getIduser()));
     }
+
 
 
 }

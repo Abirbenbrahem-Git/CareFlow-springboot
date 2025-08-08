@@ -3,8 +3,10 @@ package com.example.demo.Repository;
 import com.example.demo.Entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-    public interface UserRepository extends JpaRepository<User, Integer> {
+import java.util.Optional;
+
+public interface UserRepository extends JpaRepository<User, Integer> {
         boolean existsByMail(String mail);
-        User findByMail(String mail);
+        Optional<User> findByMailAndMotdepasse(String mail, String motdepasse);
 
     }
