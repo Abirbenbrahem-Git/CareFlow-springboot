@@ -45,6 +45,29 @@ public class UserController {
         }
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<User> updateUser(@PathVariable int id, @RequestBody User updatedUser) {
+        Optional<User> existingUserOpt = userRepository.findById(id);
+
+        if (existingUserOpt.isPresent()) {
+            User existingUser = existingUserOpt.get();
+
+            existingUser.setCin(updatedUser.getCin());
+            existingUser.setNom(updatedUser.getNom());
+            existingUser.setPrenom(updatedUser.getPrenom());
+            existingUser.setMail(updatedUser.getMail());
+            existingUser.setNumtel(updatedUser.getNumtel());
+            existingUser.setMotdepasse(updatedUser.getMotdepasse());
+            existingUser.setResidence(updatedUser.getResidence());
+            existingUser.setRole(updatedUser.getRole());
+
+            userRepository.save(existingUser);
+            return ResponseEntity.ok(existingUser);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 
 
 }
