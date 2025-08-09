@@ -124,6 +124,6 @@ public class Bulletin {
     }
 
     public enum EtatBulletin {
-        en_cours, valide, reffuse
+        en_cours, valide, refuse
     }
 }

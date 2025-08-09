@@ -4,6 +4,9 @@ import com.example.demo.Entity.Bulletin;
 import com.example.demo.Repository.BulletinRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -101,6 +104,40 @@ public class BulletinController {
         return bulletinRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Bulletin avec ID " + id + " introuvable."));
     }
+
+    @GetMapping("/download/{id}")
+    public ResponseEntity<byte[]> downloadFile(@PathVariable Integer id) {
+        Bulletin bulletin = bulletinRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Bulletin not found"));
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + bulletin.getReference() + ".pdf")
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(bulletin.getFichier());
+    }
+
+    @PutMapping("/update-etat/{id}")
+    public ResponseEntity<Void> updateEtat(@PathVariable Integer id, @RequestParam String etat) {
+        Bulletin bulletin = bulletinRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Bulletin not found"));
+        try {
+            Bulletin.EtatBulletin etatEnum = Bulletin.EtatBulletin.valueOf(etat.toLowerCase());
+            bulletin.setEtat(etatEnum);
+            bulletinRepository.save(bulletin);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/en-cours")
+    public List<Bulletin> getBulletinsEnCours() {
+        return bulletinRepository.findAll()
+                .stream()
+                .filter(b -> b.getEtat() == Bulletin.EtatBulletin.en_cours)
+                .toList();
+    }
+
 
 
 
