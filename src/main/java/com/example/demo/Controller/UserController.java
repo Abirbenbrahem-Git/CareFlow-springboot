@@ -74,6 +74,17 @@ public class UserController {
         return userRepository.findAll();
     }
 
+    @DeleteMapping("/{iduser}")
+    public ResponseEntity<?> deleteUser(@PathVariable int iduser) {
+        Optional<User> userOpt = userRepository.findById(iduser);
+        if (userOpt.isPresent()) {
+            userRepository.deleteById(iduser);
+            return ResponseEntity.ok("{\"message\": \"Utilisateur supprimé avec succès.\"}");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("{\"message\": \"Utilisateur non trouvé.\"}");
+        }
+    }
 
 
 
